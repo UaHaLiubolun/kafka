@@ -78,8 +78,7 @@ public class ConvertSiteTask {
     }
 
     public static void main(String[] args) {
-//        String[] s = {};
-//        ConvertSiteTask.convert(s);
-        pushGzhContent();
+        String[] s = {};
+        ConvertSiteTask.convert(s);
     }
 }
