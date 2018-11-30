@@ -66,7 +66,7 @@ public class ConvertSiteTask {
 
     static void pushGzhContent() {
         List<Map> result = new ArrayList<>();
-        MongoCursor<Map> mapMongoCursor = gzh_content.find().sort(eq("createdAt", -1)).limit(1500).iterator();
+        MongoCursor<Map> mapMongoCursor = gzh_content.find().sort(eq("createdAt", -1)).limit(100).iterator();
         while (mapMongoCursor.hasNext()) {
             Map map = mapMongoCursor.next();
             map.remove("_id");
@@ -79,6 +79,6 @@ public class ConvertSiteTask {
 
     public static void main(String[] args) {
         String[] s = {};
-        ConvertSiteTask.convert(s);
+//        ConvertSiteTask.pushGzhContent();
     }
 }
