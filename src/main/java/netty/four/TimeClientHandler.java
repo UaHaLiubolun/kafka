@@ -2,11 +2,11 @@ package netty.four;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
 
-public class TimeClientHandler extends ChannelInboundHandlerAdapter {
+public class TimeClientHandler extends ChannelHandlerAdapter {
 
     private int counter = 0;
 

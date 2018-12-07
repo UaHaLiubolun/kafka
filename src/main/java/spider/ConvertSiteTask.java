@@ -34,7 +34,7 @@ public class ConvertSiteTask {
             Map newsListTask = getNewsListTask(newsList.get("urlMd5").toString());
             newsList.remove("_id");
             newsListTask.remove("_id");
-            HttpUtils.executePost("http://spider-api.chinamcloud.com/newsList", JSON.toJSONString(newsList));
+//            HttpUtils.executePost("http://spider-api.chinamcloud.com/newsList", JSON.toJSONString(newsList));
             HttpUtils.executePost("http://spider-api.chinamcloud.com/siteTask", JSON.toJSONString(newsListTask));
         }
     }
@@ -66,7 +66,7 @@ public class ConvertSiteTask {
 
     static void pushGzhContent() {
         List<Map> result = new ArrayList<>();
-        MongoCursor<Map> mapMongoCursor = gzh_content.find().sort(eq("createdAt", -1)).limit(100).iterator();
+        MongoCursor<Map> mapMongoCursor = gzh_content.find().sort(eq("createdAt", -1)).limit(20).iterator();
         while (mapMongoCursor.hasNext()) {
             Map map = mapMongoCursor.next();
             map.remove("_id");
@@ -78,7 +78,8 @@ public class ConvertSiteTask {
     }
 
     public static void main(String[] args) {
-        String[] s = {};
-//        ConvertSiteTask.pushGzhContent();
+//        String[] s = {"看看新闻_中国", "看看新闻_全球", "看看新闻_上海", "看看新闻_港澳天", "看看新闻_文娱", "看看新闻_社会"};
+//        ConvertSiteTask.convert(s);
+        ConvertSiteTask.pushGzhContent();
     }
 }
