@@ -397,7 +397,7 @@ public class MedianofTwoSortedArrays {
     }
 
     public List<String> restoreIpAddresses(String s) {
-
+        return null;
     }
 
     public static void main(String[] args) {
