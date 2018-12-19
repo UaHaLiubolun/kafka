@@ -1,5 +1,7 @@
 package algorithms;
 
+import org.apache.kafka.common.metrics.stats.Max;
+
 import java.util.*;
 
 public class MedianofTwoSortedArrays {
@@ -343,6 +345,24 @@ public class MedianofTwoSortedArrays {
         return result;
     }
 
+    public int[] getNext(String t) {
+        char[] tC = t.toCharArray();
+        int i = -1;
+        int j = 0;
+        int[] next = new int[tC.length];
+        next[0] = -1;
+        while (j < tC.length - 1) {
+             if (i == -1 || tC[i] == tC[j]) {
+                j++;
+                i++;
+                next[j] = i;
+            } else {
+                i = next[i];
+            }
+        }
+        return next;
+    }
+
     public String multiplyV2(String num1, String num2) {
         int s1L = num1.length();
         int s2L = num2.length();
@@ -397,12 +417,167 @@ public class MedianofTwoSortedArrays {
     }
 
     public List<String> restoreIpAddresses(String s) {
-        return null;
+        List<String> list = new LinkedList<>();
+        int len = s.length();
+        for (int i = 1; i < 4 && i < len - 2; i++) {
+            for (int j = i + 1; j <= i + 3 && j < len - 1 ; j++) {
+                for (int k = j + 1; k <= j + 3 && k < len; k++) {
+                    String s1 = s.substring(0, i);
+                    String s2 = s.substring(i, j);
+                    String s3 = s.substring(j, k);
+                    String s4 = s.substring(k);
+                    if (isValid(s1) && isValid(s2) && isValid(s3) && isValid(s4)) {
+                        list.add(s1 + "." + s2 + "." + s3 + "." + s4);
+                    }
+                }
+            }
+        }
+        return list;
     }
+
+    private boolean isValid(String s) {
+        if (s.length() > 1 && s.charAt(0) == '0') return false;
+        if (s.length() > 3) return false;
+        return Integer.parseInt(s) <= 255;
+    }
+
+    /**
+     * 最大岛屿面积
+     * @param grid
+     * [[0,0,1,0,0,0,0,1,0,0,0,0,0],
+     *  [0,0,0,0,0,0,0,1,1,1,0,0,0],
+     *  [0,1,1,0,1,0,0,0,0,0,0,0,0],
+     *  [0,1,0,0,1,1,0,0,1,0,1,0,0],
+     *  [0,1,0,0,1,1,0,0,1,1,1,0,0],
+     *  [0,0,0,0,0,0,0,0,0,0,1,0,0],
+     *  [0,0,0,0,0,0,0,1,1,1,0,0,0],
+     *  [0,0,0,0,0,0,0,1,1,0,0,0,0]]
+     * @return 6
+     */
+    public int maxAreaOfIsland(int[][] grid) {
+        boolean[][] scan = new boolean[grid.length][grid[0].length];
+        int ans = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                ans = Math.max(ans, area(i, j, grid, scan));
+            }
+        }
+        return ans;
+    }
+
+    private int area(int r, int c, int[][] grid, boolean[][] seen) {
+        if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length ||
+                seen[r][c] || grid[r][c] == 0)
+            return 0;
+        seen[r][c] = true;
+        return (1 + area(r+1, c, grid, seen) + area(r-1, c, grid, seen)
+                + area(r, c-1, grid, seen) + area(r, c+1, grid, seen));
+    }
+
+
+    /**
+     * letcode 674
+     * 最长连续递增序列
+     * @param nums [1,3,5,4,7]
+     * @return 3
+     */
+    public int findLengthOfLCIS(int[] nums) {
+        if (nums.length == 0) return 0;
+        int max = 0;
+        int now = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] > nums[i - 1]) {
+                now ++;
+            } else {
+                max = Math.max(now, max);
+                now = 1;
+            }
+        }
+        return Math.max(now, max);
+    }
+
+    public int findKthLargest(int[] nums, int k) {
+        Arrays.sort(nums);
+        return nums[nums.length - k];
+    }
+
+    /**
+     * leetcode 128
+     * 最长连续序列
+     * @param nums [100, 4, 200, 1, 3, 2]
+     * @return 4
+     */
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> set = new TreeSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            set.add(nums[i]);
+        }
+        int max = 0;
+        int now = 1;
+        int last = Integer.MIN_VALUE;
+        Iterator<Integer> integerIterator = set.iterator();
+        while (integerIterator.hasNext()) {
+            int temp = integerIterator.next();
+            if (last == Integer.MIN_VALUE) {
+                last = temp;
+            } else {
+                if ((temp - last) == 1) {
+                    now ++;
+                } else {
+                    max = Math.max(now, max);
+                    now = 1;
+                }
+            }
+            last = temp;
+        }
+        return  Math.max(now, max);
+    }
+
+    /**
+     * 第k个排列
+     * @param n 给出集合 [1,2,3,…,n]，其所有元素共有 n! 种排列。
+     * @param k 返回第 k 个排列。
+     * n = 4, k = 9
+     * @return "2314"
+     */
+    public String getPermutation(int n, int k) {
+        StringBuffer sb = new StringBuffer();
+        List<Integer> integers = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            integers.add(i + 1);
+        }
+        while (sb.length() != n) {
+           int circle = simpleCircle(integers.size() - 1);
+           if (integers.size() == 1) sb.append(integers.remove(0));
+           else {
+               int i = k / circle;
+               int yu = k % circle;
+               if (i != 0 && yu == 0) {
+                   sb.append(integers.remove(i - 1));
+                   k = circle;
+               } else {
+                   sb.append(integers.remove(i));
+                   k = yu;
+               }
+           }
+        }
+        return sb.toString();
+    }
+
+    private int simpleCircle(int num){//简单的循环计算的阶乘
+        int sum=1;
+        for(int i=1;i<=num;i++){//循环num
+            sum *= i;//每循环一次进行乘法运算
+        }
+        return sum;//返回阶乘的值
+    }
+
+
 
     public static void main(String[] args) {
         MedianofTwoSortedArrays m = new MedianofTwoSortedArrays();
         String[] s = {"dlower", "flow", "flight"};
-        System.out.println(m.simplifyPath("/a/./b///../c/../././../d/..//../e/./f/./g/././//.//h///././/..///"));
+        int[] nums = {100,4,200,1,3,2};
+        System.out.println(m.getPermutation(3, 2));
     }
 }
