@@ -39,6 +39,14 @@ public class MedianofTwoSortedArrays {
         return 0.0;
     }
 
+
+    /**
+     * 两数相加
+     * 2. Add Two Numbers
+     * @param l1 (2 -> 4 -> 3)
+     * @param l2 (5 -> 6 -> 4)
+     * @return 7 -> 0 -> 8
+     */
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         ListNode a = l1;
         ListNode b = l2;
@@ -163,7 +171,6 @@ public class MedianofTwoSortedArrays {
             } else {
                 isMore = true;
             }
-
             if (s.charAt(sIndex) == c || c == '.') {
                 if (!isMore) {
                     pIndex ++;
@@ -573,11 +580,121 @@ public class MedianofTwoSortedArrays {
     }
 
 
+    /**
+     * 朋友圈
+     * leetcode 547. Friend Circles
+     * @param M
+     *[[1,1,0],
+     *  [1,1,0],
+     *  [0,0,1]]
+     * @return 2
+     */
+    public int findCircleNum(int[][] M) {
+        Set<Integer> set = new HashSet<>();
+        for (int i = 0; i < M.length; i++) {
+            set.add(i);
+        }
+        int count = 0;
+        for (int i = 0; i < M.length; i++) {
+            if (set.remove(i)) {
+                bfs(M, set, i);
+                count ++;
+            }
+        }
+        return count;
+    }
+
+    private void bfs(int[][] M, Set<Integer> set, int i) {
+        if (set.size() == 0) return;
+        for (int j = 0; j < M.length; j++) {
+            if (i == j) continue;
+            if (M[i][j] == 1) {
+                if (set.remove(j)) {
+                    bfs(M, set, j);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 合并区间
+     * 56. Merge Intervals
+     * @param intervals
+     * [[1,3],[2,6],[8,10],[15,18]]
+     * @return
+     * [[1,6],[8,10],[15,18]]
+     */
+    public List<Interval> merge(List<Interval> intervals) {
+        intervals.sort(Comparator.comparing((Interval i) -> i.start));
+        if (intervals.size() == 1) return intervals;
+        List<Interval> rs = new LinkedList<>();
+        Interval interval = null;
+        for (int i = 0; i < intervals.size(); i++) {
+            if (interval == null) {
+                interval = intervals.get(i);
+            }
+            if (i == intervals.size() - 1) {
+                rs.add(interval);
+                continue;
+            }
+            if (interval.end >= intervals.get(i + 1).start) {
+                if (interval.start > intervals.get(i + 1).start) {
+                    interval.start =intervals.get(i + 1).start;
+                }
+                if (interval.end < intervals.get(i + 1).end) {
+                    interval.end =intervals.get(i + 1).end;
+                }
+            } else {
+                Interval temp = new Interval(interval.start, interval.end);
+                interval = null;
+                rs.add(temp);
+            }
+
+        }
+        return rs;
+    }
+
+
+
+    private int find(List<Interval> intervals, int num) {
+        for (int i = 0; i < intervals.size(); i++) {
+            if (num <= intervals.get(i).end && num >= intervals.get(i).start) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 合并两个有序链表
+     * 21. Merge Two Sorted Lists
+     * @param l1 l2
+     * Input: 1->2->4, 1->3->4
+     * @return
+     * * Output: 1->1->2->3->4->4
+     */
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if(l1 == null) return l2;
+        if(l2 == null) return l1;
+        if(l1.val < l2.val){
+            l1.next = mergeTwoLists(l1.next, l2);
+            return l1;
+        } else{
+            l2.next = mergeTwoLists(l1, l2.next);
+            return l2;
+        }
+    }
+
+
+
 
     public static void main(String[] args) {
         MedianofTwoSortedArrays m = new MedianofTwoSortedArrays();
         String[] s = {"dlower", "flow", "flight"};
         int[] nums = {100,4,200,1,3,2};
-        System.out.println(m.getPermutation(3, 2));
+        int[][] c = {{1,1,0},{1,1,1},{0,1,1}};
+        System.out.println(m.findCircleNum(c));
+//        System.out.println(m.getPermutation(3, 2));
     }
 }

@@ -60,7 +60,14 @@ public class ConvertSiteTask {
         CodeResult codeResult = gson.fromJson(result, CodeResult.class);
         List<Map<String, String>> list = (List<Map<String, String>>)codeResult.getResult();
         list.stream().forEach(
-                l -> gzh_list.insertOne(l)
+                l -> {
+                    try {
+                        gzh_list.insertOne(l);
+                        System.out.println(1111);
+                    } catch (Exception e) {
+
+                    }
+                }
         );
     }
 
@@ -80,6 +87,6 @@ public class ConvertSiteTask {
     public static void main(String[] args) {
 //        String[] s = {"看看新闻_中国", "看看新闻_全球", "看看新闻_上海", "看看新闻_港澳天", "看看新闻_文娱", "看看新闻_社会"};
 //        ConvertSiteTask.convert(s);
-        ConvertSiteTask.pushGzhContent();
+        ConvertSiteTask.getGzhToMongo();
     }
 }
