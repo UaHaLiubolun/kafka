@@ -687,14 +687,56 @@ public class MedianofTwoSortedArrays {
     }
 
 
+    /**
+     * 接雨水
+     * 42. Trapping Rain Water
+     * @param height [0,1,0,2,1,0,1,3,2,1,2,1]
+     * @return 6
+     */
+    public int trap(int[] height) {
+        int[] left = new int[height.length];
+        int[] right = new int[height.length];
+
+        int ans = 0;
+
+        left[0] = height[0];
+        for (int i = 0; i < height.length - 1; i++) {
+            left[i + 1] = Math.max(height[i + 1], left[i]);
+        }
+        right[height.length - 1] = height[height.length - 1];
+        for (int i = height.length - 1; i > 0 ; i--) {
+            right[i - 1] = Math.max(height[i - 1], right[i]);
+        }
+
+        for (int i = 0; i < height.length; i++) {
+            ans += Math.min(left[i], right[i]) - height[i];
+        }
+        return ans;
+    }
+
+    public ListNode reverseList(ListNode head) {
+        Stack<ListNode> stack = new Stack<>();
+        while (head != null) {
+            stack.push(head);
+            head = head.next;
+        }
+        ListNode node;
+        while (!stack.empty()) {
+           head = stack.pop();
+           head = head.next;
+        }
+        return head;
+    }
+
+
 
 
     public static void main(String[] args) {
         MedianofTwoSortedArrays m = new MedianofTwoSortedArrays();
         String[] s = {"dlower", "flow", "flight"};
-        int[] nums = {100,4,200,1,3,2};
+        int[] nums = {0,1,0,2,1,0,1,3,2,1,2,1};
         int[][] c = {{1,1,0},{1,1,1},{0,1,1}};
-        System.out.println(m.findCircleNum(c));
+        System.out.println(m.trap(nums));
 //        System.out.println(m.getPermutation(3, 2));
     }
 }

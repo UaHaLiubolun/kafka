@@ -24,15 +24,21 @@ public class HttpUtils {
     public static String executePost(String url, String queryParams) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(60000).setSocketTimeout(60000).build();
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "application/json");
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(60000).setSocketTimeout(60000).build();
         httpPost.setConfig(requestConfig);
+        String param = "{\n" +
+                "\t\"siteName\": \"澎湃新闻\",\n" +
+                "\t\"fromCrawlerDt\": \"2018-12-22 12:00:00\",\n" +
+                "\t\"toCrawlerDt\": \"2018-12-25 12:00:00\",\n" +
+                "\t\"page\": 1,\n" +
+                "\t\"size\": 10\n" +
+                "}";
         StringEntity entity = new StringEntity(queryParams, "UTF-8");
         entity.setContentType("text/json");
         httpPost.setEntity(entity);
         String result = "";
-
         try {
             response = httpClient.execute(httpPost);
             if (response != null && response.getStatusLine().getStatusCode() == 200) {
@@ -52,9 +58,47 @@ public class HttpUtils {
             } catch (IOException var16) {
                 var16.printStackTrace();
             }
-
         }
+        return result;
+    }
 
+
+    public static String executePost() {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(60000).setSocketTimeout(60000).build();
+        HttpPost httpPost = new HttpPost("http://47.94.90.194:8086/data-service/getDocsBySiteName.do");
+        httpPost.addHeader("Content-Type", "application/json");
+        httpPost.setConfig(requestConfig);
+        String param = "{\n" +
+                "\t\"siteName\": \"澎湃新闻\",\n" +
+                "\t\"fromCrawlerDt\": \"2018-12-22 12:00:00\",\n" +
+                "\t\"toCrawlerDt\": \"2018-12-26 12:00:00\",\n" +
+                "\t\"page\": 1,\n" +
+                "\t\"size\": 10\n" +
+                "}";
+        StringEntity entity = new StringEntity(param, "UTF-8");
+        entity.setContentType("text/json");
+        httpPost.setEntity(entity);
+        String result = "";
+        try {
+            response = httpClient.execute(httpPost);
+            if (response != null && response.getStatusLine().getStatusCode() == 200) {
+                HttpEntity entity2 = response.getEntity();
+                result = EntityUtils.toString(entity2);
+                EntityUtils.consume(entity2);
+            }
+        } catch (IOException var17) {
+            var17.printStackTrace();
+        } finally {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+            } catch (IOException var16) {
+                var16.printStackTrace();
+            }
+        }
         return result;
     }
 
@@ -109,5 +153,9 @@ public class HttpUtils {
         }
 
         return executeGet(url, headers);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(HttpUtils.executePost());
     }
 }
