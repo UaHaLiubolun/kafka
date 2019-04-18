@@ -58,6 +58,13 @@
             <version>5.0.0.Alpha1</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>9.0.6</version>
+        </dependency>
+
         <!--<dependency>-->
             <!--<groupId>io.netty</groupId>-->
             <!--<artifactId>netty-all</artifactId>-->
