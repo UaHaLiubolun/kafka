@@ -6,12 +6,7 @@
  */
 package algorithms;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * NumsSameConsecDiff
@@ -23,20 +18,29 @@ import java.util.Set;
 public class NumsSameConsecDiff {
 
     public int[] numsSameConsecDiff(int N, int K) {
-        List<Integer> result = new ArrayList<>();
+        Set<Integer> result = new HashSet<>();
         for (int i = 1; i < 10; i++) {
             StringBuilder sb = new StringBuilder();
             sb.append(i);
             numsSame(result, sb, N, K);
         }
-        int[] r = new int[result.size()];
-        for (int i = 0; i < result.size(); i++) {
-            r[i] = result.get(i);
+        if (N == 1) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(0);
+            numsSame(result, sb, N, K);
         }
+        int[] r = new int[result.size()];
+        Iterator<Integer> integerIterator = result.iterator();
+        int i = 0;
+        while (integerIterator.hasNext()) {
+            r[i] = integerIterator.next();
+            i++;
+        }
+        Arrays.sort(r);
         return r;
     }
 
-    private void numsSame(List<Integer> set, StringBuilder s, int n, int k) {
+    private void numsSame(Set<Integer> set, StringBuilder s, int n, int k) {
         if (s.length() == n) {
             set.add(Integer.parseInt(s.toString()));
             return;
@@ -48,20 +52,17 @@ public class NumsSameConsecDiff {
                 s.append(newNumOne);
                 if (s.length() == n) {
                     set.add(Integer.parseInt(s.toString()));
-                    return;
+                    s.deleteCharAt(s.length() - 1);
                 } else {
                     numsSame(set, s, n, k);
                 }
-            }
-            if (s.length() == n) {
-                return;
             }
             int newNumTwo = num - k;
             if (newNumTwo >= 0) {
                 s.append(newNumTwo);
                 if (s.length() == n) {
                     set.add(Integer.parseInt(s.toString()));
-                    return;
+                    s.deleteCharAt(s.length() - 1);
                 } else {
                     numsSame(set, s, n, k);
                 }
