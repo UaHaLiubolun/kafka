@@ -6,7 +6,6 @@
  */
 package algorithms;
 
-import sun.tools.jstat.Literal;
 
 import java.util.Arrays;
 import java.util.LinkedList;
