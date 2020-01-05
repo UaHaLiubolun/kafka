@@ -19,7 +19,7 @@ public class Test {
     public static void main(String[] args) {
 
        try {
-           System.out.println("Exception Test");
+           System.out.println("Exception Main");
            String s = null;
            s.toCharArray();
        } catch (Exception e) {
