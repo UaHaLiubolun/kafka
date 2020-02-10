@@ -7,6 +7,7 @@
 package algorithms;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,32 +22,40 @@ import java.util.List;
 public class FourSum {
 
     public List<List<Integer>> fourSum(int[] nums, int target) {
+        if (nums == null || nums.length < 4) return new ArrayList<>(0);
         Arrays.sort(nums);
         List<List<Integer>> lists = new LinkedList<>();
-        findFour(nums, target, lists, new LinkedList<>(), 4, 0);
+        for (int a = 0; a <= nums.length - 4; a++) {
+            if (a > 0 && nums[a] == nums[a - 1]) continue;
+            for (int b = a + 1; b <= nums.length - 3; b++) {
+                if (b > a + 1 && nums[b] == nums[b - 1]) continue;
+                int c = b + 1; int d = nums.length - 1;
+                while (c < d) {
+                    if (nums[a] + nums[b] + nums[c] + nums[d] == target) {
+                        lists.add(Arrays.asList(nums[a], nums[b], nums[c], nums[d]));
+                        c++;
+                        d--;
+                        while (c < d && nums[c] == nums[c - 1]) {
+                            c ++;
+                        }
+                        while (c < d && nums[d] == nums[d + 1]) {
+                            d --;
+                        }
+                    } else if (nums[a] + nums[b] + nums[c] + nums[d] > target) {
+                        d --;
+                    } else {
+                        c ++;
+                    }
+                }
+            }
+        }
         return lists;
     }
 
-    private void findFour(int[] nums, int target, List<List<Integer>> lists, List<Integer> integers, int k, int index) {
-        if (k == 0 && target == 0) {
-            lists.add(integers);
-            return;
-        }
-        if (k == 0) {
-            return;
-        }
-        for (int i = index; i < nums.length; i++) {
-            if (nums[i] < target) {
-                List<Integer> newI = new LinkedList<>(integers);
-                newI.add(nums[i]);
-                findFour(nums, target - nums[i], lists, newI, k - 1, i + 1);
-            }
-        }
-    }
 
     public static void main(String[] args) {
         FourSum fourSum = new FourSum();
-        int[] test = {1,0,-1,0,-2,2};
+        int[] test = {0,0,0,0};
         fourSum.fourSum(test, 0);
     }
 }
